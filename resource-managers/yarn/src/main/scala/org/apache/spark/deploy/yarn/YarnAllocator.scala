@@ -722,9 +722,16 @@ private object YarnAllocator {
 
   def memLimitExceededLogMessage(diagnostics: String, pattern: Pattern): String = {
     val matcher = pattern.matcher(diagnostics)
+    // The configuration spark.yarn.executor.memoryOverhead was depracated,
+    // use the spark.executor.memoryOverhead instead.
+//    val diag = if (matcher.find()) " " + matcher.group() + "." else ""
+//    s"Container killed by YARN for exceeding memory limits. $diag " +
+//      "Consider boosting spark.yarn.executor.memoryOverhead or " +
+//      "disabling yarn.nodemanager.vmem-check-enabled because of YARN-4714."
     val diag = if (matcher.find()) " " + matcher.group() + "." else ""
     s"Container killed by YARN for exceeding memory limits. $diag " +
-      "Consider boosting spark.yarn.executor.memoryOverhead or " +
-      "disabling yarn.nodemanager.vmem-check-enabled because of YARN-4714."
+      "Consider boosting spark.executor.memoryOverhead or " +
+      "disabling yarn.nodemanager.vmem-check-enabled because of YARN-4714." +
+      "[Notice the configuration spark.yarn.executor.memoryOverhead was deparcated.]"
   }
 }
